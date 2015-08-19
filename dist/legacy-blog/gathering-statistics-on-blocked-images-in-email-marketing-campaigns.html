@@ -1,0 +1,30 @@
+<!DOCTYPE html><html class="no-js" lang="en"><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0"><link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"><title>Gathering Statistics on Blocked Images in Email Marketing Campaigns | CS Development</title></head><body><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+            })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+            ga('create', 'UA-66512025-1', 'auto');
+            ga('send', 'pageview');</script><div class="container"><h1>Gathering Statistics on Blocked Images in Email Marketing Campaigns</h1><p>A lot of my clients use different email system to handle their marketing campaigns. Whether it&#39;s RatePoint, Constant Contact, or some of their own proprietary platforms, they are all running into the same problem -- most modern email systems don&#39;t display inline images by default. This gives them the fear that their mailings are giving an even lower return rate to an already low rate. I tend to think that the people who pay attention to email-based advertisements are pretty likely to hit the &quot;always display images from this sender&quot; button, but you can never be sure. Additionally, people tend to differ in these regards from product to product.&nbsp;</p><p>Anyways, I&#39;m going to be inserting some of my own tracking into clients email campaigns to see who&#39;s really displaying the images. Simply place &lt;img src=&quot;http://myserver.com/img.php&quot; /&gt; line in the source of your mailer, and have the corresponding php file contain this sample&nbsp;code:</p><pre>
+<?php
+// declare content-type so browser knows to expect and image
+header("Content-type: image/jpeg");
+
+// print the file to screen
+echo readfile('img.jpg');
+
+// create an integer and assign it the value of the contents of a text file
+$i = file_get_contents('stats.txt');
+// if textfile has no value (or doesn't exist yet) just say '0'
+if(strlen($i) == 0) $i=0;
+// since the image is being called and loaded, add 1 to our counter
+$i++;
+
+// write these changes to our stat counter file
+$fp = fopen('stats.txt', "w");
+fwrite($fp, $i);
+fclose($fp);
+?>
+</pre><p>The img.jpg could be a 1 pixel square or a real image from your html email, it's up to you. To track, this script simply takes the value of the current # of reads (stored in stats.txt) and adds 1 to it.</p><p>I'm curious to see how Gmail or Outlook handles this. Emails that come through Gmail and have inline images display in a box that's the same width and height of the image (until the image loads). So I'm curious if they're doing any pre-loading (which would trigger this script) or if they are doing pre-loading once per request (regardless of how many emails use the same file) and caching the data.</p></div><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fastclick/1.0.6/fastclick.min.js"></script><script>if ('addEventListener' in document) {
+            document.addEventListener('DOMContentLoaded', function() {
+                FastClick.attach(document.body);
+            }, false);
+        }</script></body></html>
